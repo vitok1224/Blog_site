@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load sidebar_tags %}
+
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block content %}
+    <section class="single-blog-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="border-top">
+                        <div class="col-md-8">
+                            <div class="blog-area">
+                                <div class="blog-area-part">
+                                    {% for post in posts %}
+                                        <div class="col-md-5">
+                                            <div class="single-post">
+                                                {% if post.photo %}
+                                                    <img src="{{ post.photo.url }}" alt="{{ post.title }}">
+                                                {% else %}
+                                                    <img src="https://picsum.photos/id/1060/300/201/?blur=2"
+                                                         alt="{{ post.title }}">
+                                                {% endif %}
+
+                                                <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+                                                <h4><span>Posted By: <span class="author-name">{{ post.author }}</span></span>
+                                                </h4>
+                                                <p>{{ post.content|safe|truncatewords_html:20 }}</p>
+                                                <h4><span>{{ post.created_at }}</span></h4>
+                                            </div>
+                                        </div>
+                                    {% empty %}
+                                        <p>Nothing found according to your request</p>
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            {% show_search_ponel %}
+
+                            {% show_popular_posts %}
+
+                            {% show_tags_list %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="blog-post-area">
+        {% if page_obj.has_other_pages %}
+            <div class="pegination">
+                <div class="nav-links">
+                    {% if page_obj.has_previous %}
+                        <a class="page-numbers" href="?{{ s }}page={{ page_obj.previous_page_number }}"><i
+                                class='fa fa-angle-left' aria-hidden="true"></i></a>
+                    {% endif %}
+
+                    {% for p in page_obj.paginator.page_range %}
+                        {% if page_obj.number == p %}
+                            <span class="page-numbers current">{{ p }}</span>
+                        {% elif p > page_obj.number|add:-3 and p < page_obj.number|add:3 %}
+                            <a class="page-numbers" href="?{{ s }}page={{ p }}">{{ p }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <a class="page-numbers" href="?{{ s }}page={{ page_obj.next_page_number }}"><i
+                                class='fa fa-angle-right' aria-hidden="true"></i></a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}
